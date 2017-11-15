@@ -39,7 +39,7 @@ void netry::NetStream::writeBytes(const char *bytes, size_t size) {
 
 /**
  * Receive bytes trough socket
- * <p>
+ *
  * @param buffer:
  * @return the number of bytes read
  */
@@ -73,7 +73,7 @@ void netry::NetStream::writeString(std::string message) {
 
 /**
  * Receive a string from a socket stream
- * <p>
+ *
  * @return the received string
  */
 std::string netry::NetStream::readString() const {

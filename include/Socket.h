@@ -27,7 +27,6 @@ namespace netry {
         // Values of this type must be cast to struct sockaddr for use with the fileDescriptor interfaces
         struct sockaddr_in socketAddress;
 
-
     public:
 
         Socket();
@@ -38,6 +37,10 @@ namespace netry {
 
         void bind(const std::string &address, int port) throw(SocketException);
 
+        /**
+        * Destroy the client socket and closes the File Descriptor (FD)
+        * Wait to close until all data is transmitted.
+        */
         void close();
 
         void setFileDescriptor(int fileDescriptor);

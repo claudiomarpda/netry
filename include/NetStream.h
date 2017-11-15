@@ -33,14 +33,30 @@ namespace netry {
         // Explicit keyword prevents the compiler from using this constructor for implicit conversions
         explicit NetStream(int fileDescriptor);
 
+        /**
+        * Close the File Descriptor
+        */
         void close();
 
+        /**
+        * Write bytes to a socket endpoint
+        * @param bytes
+        * @param size
+        */
         void writeBytes(const char *bytes, size_t n);
 
         ssize_t readBytes(char buffer[]);
 
+        /**
+        * Writes a string to a socket endpoint
+        */
         void writeString(std::string message);
 
+        /**
+        * Receive a string from a socket stream
+        * <p>
+        * @return the received string
+        */
         std::string readString() const;
 
         int getFileDescriptor() const;

@@ -20,10 +20,10 @@ netry::ServerSocket::ServerSocket(int port) throw(SocketException) : port(port) 
 
 /**
  * Creates a socket end point for communication and defines the socket address structure (sockaddr_in).
- * <p>
+ *
  * @param port: where the server will be listening for client connection
  */
-void netry::ServerSocket::bind(int port) throw(SocketException){
+void netry::ServerSocket::bind(int port) throw(SocketException) {
 
     // Creates an endpoint for communication
     // AF_INET: IPv4 internet address of 32 bits
@@ -67,7 +67,7 @@ void netry::ServerSocket::bind(int port) throw(SocketException){
  * Accept a client connection to the socket previously created.
  * The process will stay idle (waiting) until a client connection is made.
  */
-int netry::ServerSocket::accept() throw(SocketException) {
+netry::Socket netry::ServerSocket::accept() throw(SocketException) {
     // Listen for socket connections and limit the queue of incoming connections
     if (listen(serverSocketFd, 1) < 0) {
         throw SocketException("Could not listen for connections");
@@ -84,11 +84,11 @@ int netry::ServerSocket::accept() throw(SocketException) {
         throw SocketException("Error on accepting client connection");
     }
 
-    return clientSocket;
+    return Socket(clientSocket);
 }
 
 /**
- * Closes the File Descriptor (FD)
+ * Closes the File Descriptor (FD) of the server
  * Wait to close until all data is transmitted.
  */
 void netry::ServerSocket::close() {

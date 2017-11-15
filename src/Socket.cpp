@@ -46,8 +46,6 @@ void netry::Socket::bind(const std::string &address, int port) throw(SocketExcep
 /**
  * Destroy the client socket and closes the File Descriptor (FD)
  * Wait to close until all data is transmitted.
- * <p>
- * @see: http://pubs.opengroup.org/onlinepubs/7908799/xns/close.html
  */
 void netry::Socket::close() {
     ::close(fileDescriptor);

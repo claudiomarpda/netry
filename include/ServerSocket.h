@@ -14,6 +14,7 @@
 #include <cstring>
 #include <unistd.h>
 #include "SocketException.h"
+#include "Socket.h"
 
 namespace netry {
 
@@ -27,19 +28,36 @@ namespace netry {
         int serverSocketFd; // File Descriptor
         struct sockaddr_in serverAddress; // Describes an internet socket address
         socklen_t addressSize;
-        int port; // Where it will be listening
+        int port; // Number of the port where it will be listening
 
     public:
 
         ServerSocket();
 
         // Explicit keyword prevents the compiler from using this constructor for implicit conversions
+        /**
+        * Constructor that binds the socket and the address of the server.
+        */
         explicit ServerSocket(int port) throw(SocketException);
 
+
+        /**
+        * Creates a socket end point for communication and defines the socket address structure (sockaddr_in).
+        *
+        * @param port: where the server will be listening for client connection
+        */
         void bind(int port) throw(SocketException);
 
-        int accept() throw(SocketException);
+        /**
+        * Accept a client connection to the socket previously created.
+        * The process will stay idle (waiting) until a client connection is made.
+        */
+        netry::Socket accept() throw(SocketException);
 
+        /**
+        * Closes the File Descriptor (FD) of the server
+        * Wait to close until all data is transmitted.
+        */
         void close();
 
     };
