@@ -38,8 +38,11 @@ void netry::Socket::bind(const std::string &address, int port) throw(SocketExcep
     auto port_16bits = static_cast<uint16_t>(port);
     socketAddress.sin_port = htons(port_16bits);
 
-    if (connect(fileDescriptor, (struct sockaddr *) &socketAddress, sizeof(socketAddress)) < 0) {
-        throw SocketException("Connection to the server failed");
+    int connectionResult = connect(fileDescriptor, (struct sockaddr *) &socketAddress, sizeof(socketAddress));
+    int errorSaved = errno;
+    if (connectionResult < 0) {
+        std::string errorMsg = "Connection to the server failed. errno code " + std::to_string(errorSaved);
+        throw SocketException(errorMsg);
     }
 }
 

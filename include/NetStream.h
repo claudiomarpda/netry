@@ -13,6 +13,7 @@
 #include <arpa/inet.h> // Definitions for internet operations
 #include <unistd.h>
 #include <string>
+#include "Socket.h"
 
 namespace netry {
 
@@ -24,33 +25,28 @@ namespace netry {
         const unsigned int kStringEndLength = 1;
 
     private:
-        int fileDescriptor;
+        Socket socket;
 
     public:
 
         NetStream();
 
         // Explicit keyword prevents the compiler from using this constructor for implicit conversions
-        explicit NetStream(int fileDescriptor);
-
-        /**
-        * Close the File Descriptor
-        */
-        void close();
+        explicit NetStream(const Socket &socket);
 
         /**
         * Write bytes to a socket endpoint
         * @param bytes
         * @param size
         */
-        void writeBytes(const char *bytes, size_t n);
+        void writeBytes(const char *bytes, size_t n) const;
 
-        ssize_t readBytes(char buffer[]);
+        ssize_t readBytes(char buffer[]) const;
 
         /**
         * Writes a string to a socket endpoint
         */
-        void writeString(std::string message);
+        void writeString(const std::string &message) const ;
 
         /**
         * Receive a string from a socket stream
@@ -59,10 +55,19 @@ namespace netry {
         */
         std::string readString() const;
 
-        int getFileDescriptor() const;
+        /**
+         * Writes an integer value to an endpoint
+         */
+        void writeInt(int data) const;
 
-        void setFileDescriptor(int fileDescriptor);
+        /**
+         * Receives an integer value from a socket stream
+         */
+        int readInt() const;
 
+        const Socket &getSocket() const;
+
+        void setSocket(const Socket &socket);
     };
 }
 

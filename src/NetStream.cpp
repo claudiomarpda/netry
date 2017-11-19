@@ -13,51 +13,44 @@ netry::NetStream::NetStream() = default;
 /**
  * Constructor that initiates the File Descriptor
  */
-netry::NetStream::NetStream(int fileDescriptor) : fileDescriptor(fileDescriptor) {}
-
-/**
- * Close the File Descriptor
- */
-void netry::NetStream::close() {
-    ::close(fileDescriptor);
-}
+netry::NetStream::NetStream(const netry::Socket &socket) : socket(socket) {}
 
 /**
  * Write bytes to a socket endpoint
  * @param bytes
  * @param size
  */
-void netry::NetStream::writeBytes(const char *bytes, size_t size) {
+void netry::NetStream::writeBytes(const char *bytes, size_t size) const {
 
     // TODO: check if connection is valid before transaction and throw an exception otherwise
 
     // Sends the number of bytes that will be sent
-    send(fileDescriptor, &size, sizeof(size_t), 0);
+    send(socket.getFileDescriptor(), &size, sizeof(size_t), 0);
     // Sends the bytes from buffer
-    send(fileDescriptor, bytes, size, 0);
+    send(socket.getFileDescriptor(), bytes, size, 0);
 }
 
 /**
- * Receive bytes trough socket
+ * Receive bytes through socket
  *
- * @param buffer:
+ * @param buffer: where the bytes will be stored
  * @return the number of bytes read
  */
-ssize_t netry::NetStream::readBytes(char buffer[]) {
+ssize_t netry::NetStream::readBytes(char buffer[]) const {
 
     // TODO: check if connection is valid before transaction and throw an exception otherwise
 
     size_t bytesReceived = 0;
     // Receives the number of bytes that will come from the buffer
-    recv(fileDescriptor, &bytesReceived, sizeof(size_t), 0);
+    recv(socket.getFileDescriptor(), &bytesReceived, sizeof(size_t), 0);
     // Receives the data from buffer according to the number of bytes
-    return recv(fileDescriptor, buffer, bytesReceived, 0);
+    return recv(socket.getFileDescriptor(), buffer, bytesReceived, 0);
 }
 
 /**
  * Writes a string to a socket endpoint
  */
-void netry::NetStream::writeString(std::string message) {
+void netry::NetStream::writeString(const std::string &message) const {
 
     // TODO: check if connection is valid before transaction and throw an exception otherwise
 
@@ -66,9 +59,9 @@ void netry::NetStream::writeString(std::string message) {
     // Gets the size of the string
     const size_t size = message.length() + kStringEndLength;
     // Sends the number of bytes of the string
-    send(fileDescriptor, &size, sizeof(size_t), 0);
+    send(socket.getFileDescriptor(), &size, sizeof(size_t), 0);
     // Sends the string
-    send(fileDescriptor, c, size, 0);
+    send(socket.getFileDescriptor(), c, size, 0);
 }
 
 /**
@@ -82,18 +75,33 @@ std::string netry::NetStream::readString() const {
 
     size_t bytesReceived = 0;
     // Receives the number of bytes of the string
-    recv(fileDescriptor, &bytesReceived, sizeof(size_t), 0);
+    recv(socket.getFileDescriptor(), &bytesReceived, sizeof(size_t), 0);
     char buffer[bytesReceived];
     // Receives the string
-    recv(fileDescriptor, buffer, bytesReceived, 0);
+    recv(socket.getFileDescriptor(), buffer, bytesReceived, 0);
     return std::string(buffer, bytesReceived - 1);
 }
 
-int netry::NetStream::getFileDescriptor() const {
-    return fileDescriptor;
+void netry::NetStream::writeInt(int data) const {
+
+    // TODO: check if connection is valid before transaction and throw an exception otherwise
+
+    send(socket.getFileDescriptor(), &data, sizeof(data), 0);
 }
 
-void netry::NetStream::setFileDescriptor(int fileDescriptor) {
-    NetStream::fileDescriptor = fileDescriptor;
+int netry::NetStream::readInt() const {
+
+    // TODO: check if connection is valid before transaction and throw an exception otherwise
+
+    int data;
+    recv(socket.getFileDescriptor(), &data, sizeof(int), 0);
+    return data;
 }
 
+const netry::Socket &netry::NetStream::getSocket() const {
+    return socket;
+}
+
+void netry::NetStream::setSocket(const netry::Socket &socket) {
+    NetStream::socket = socket;
+}
