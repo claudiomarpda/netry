@@ -22,7 +22,7 @@ namespace netry {
      */
     class NetStream {
 
-        const unsigned int kStringEndLength = 1;
+        static const unsigned int kStringEndLength = 1;
 
     private:
         Socket socket;
